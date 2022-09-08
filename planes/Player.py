@@ -12,7 +12,6 @@ class Plane:
         self.y = y
         self.health = 2
         self.size = 8
-        self.spread = 2
         self.speed = .8
         self.bullets = []
         self.gameOver = None
@@ -37,10 +36,7 @@ class Plane:
             self.gameOver = time.time() + 2
 
     def shoot(self):
-        for i in range(self.spread):
-            angularSpacing = math.pi / (self.spread + 1)
-            angle = angularSpacing * (i + 1)
-            self.bullets.append(Bullet(self.x, self.y - self.size/2))
+        self.bullets.append(Bullet(self.x, self.y - self.size/2))
 
     def handleInputs(self):
         if self.gameOver:
