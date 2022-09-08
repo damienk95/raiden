@@ -22,4 +22,4 @@ class Bullet:
                 t.takeDamage()
 
     def draw(self, screen):
-        pygame.draw.rect(screen, (180, 80, 80), (self.x - self.size / 2, self.y - self.size / 2, self.size, self.size))
+        pygame.draw.rect(screen, (255, 255, 255), (self.x - self.size / 2, self.y - self.size / 2, self.size, self.size))
