@@ -1,17 +1,16 @@
 import pygame
 import math
 from weapons.Bullet import Bullet
-import time
 from util import WIDTH, RateLimiter
 
 
 class Enemy:
-    def __init__(self, x, y, health=5):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
         self.size = 8
         self.dead = False
-        self.health = health
+        self.health = 1
         self.color = (0, 180, 180)
         self.recoilCounter = 0
         self.bullets = []
@@ -26,21 +25,21 @@ class Enemy:
 
         if abs(self.y - player.y) < 50:
             if self.rateLimiter.shoot(1):
-                self.bullets.append(Bullet(self.x, self.y, 3 * math.pi / 2))
-            self.x += speed * self.xDir
+                self.bullets.append(Bullet(self.x, self.y, True))
+            self.x = self.x + speed * self.xDir
 
             if self.x > WIDTH * .8:
                 self.xDir = -1
             elif self.x < WIDTH * .2:
                 self.xDir = 1
         else:
-            self.y += speed
+            self.y = self.y + speed
 
         for b in self.bullets:
             b.update([player])
 
     def takeDamage(self):
-        self.health -= 1
+        self.health = self.health - 1
         self.recoilCounter = 5
         if self.health <= 0:
             self.dead = True

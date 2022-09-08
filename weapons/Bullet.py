@@ -1,26 +1,25 @@
-from util import distance
 import pygame
-import math
 
 class Bullet:
-    def __init__(self, x, y, angle=math.pi/2, speed=1):
+    def __init__(self, x, y, down=False, speed=1):
         self.x = x
         self.y = y
-        self.angle = angle
         self.speed = speed
         self.size = 4
         self.spent = False
+        self.down = down
     
     def update(self, targets):
-        self.y -= math.sin(self.angle) * self.speed
-        self.x += math.cos(self.angle) * self.speed
+        if self.down:
+            self.y += self.speed
+        else:
+            self.y -= self.speed
 
-        if not self.spent:
-            for t in targets:
-                if distance(self, t) <= (t.size + self.size) / 2:
-                    t.takeDamage()
-                    self.spent = True
+        for t in targets:
+            xDistance = abs(self.x - t.x)
+            yDistance = abs(self.y - t.y)
+            if (xDistance + yDistance) < self.size:
+                t.takeDamage()
 
     def draw(self, screen):
-        if not self.spent:
-            pygame.draw.rect(screen, (180, 80, 80), (self.x - self.size / 2, self.y - self.size / 2, self.size, self.size))
+        pygame.draw.rect(screen, (180, 80, 80), (self.x - self.size / 2, self.y - self.size / 2, self.size, self.size))

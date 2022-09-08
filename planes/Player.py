@@ -1,8 +1,9 @@
 from weapons.Bullet import Bullet
-from util import distance, RateLimiter, planeBoomSprite, planeSprite, planeLeftSprite, planeRightSprite
+from sprites import planeSprite, planeLeftSprite, planeRightSprite, planeBoomSprite
 import math
 import time
 import pygame
+
 
 class Plane:
     def __init__(self, x, y):
@@ -15,33 +16,31 @@ class Plane:
         self.speed = .8
         self.bullets = []
         self.gameOver = None
-        self.rateLimiter = RateLimiter()
     
     def moveUp(self):
-        self.y -= self.speed
+        self.y = self.y - self.speed
 
     def moveDown(self):
-        self.y += self.speed
+        self.y = self.y + self.speed
 
     def moveRight(self):
-        self.x += self.speed
+        self.x = self.x + self.speed
         self.sprite = planeRightSprite
 
     def moveLeft(self):
-        self.x -= self.speed
+        self.x = self.x - self.speed
         self.sprite = planeLeftSprite
     
     def takeDamage(self):
-        self.health -= 1
+        self.health = self.health - 1
         if self.health <= 0:
             self.gameOver = time.time() + 2
 
     def shoot(self):
-        if self.rateLimiter.shoot(1):
-            for i in range(self.spread):
-                angularSpacing = math.pi / (self.spread + 1)
-                angle = angularSpacing * (i + 1)
-                self.bullets.append(Bullet(self.x, self.y - self.size/2, angle))
+        for i in range(self.spread):
+            angularSpacing = math.pi / (self.spread + 1)
+            angle = angularSpacing * (i + 1)
+            self.bullets.append(Bullet(self.x, self.y - self.size/2))
 
     def handleInputs(self):
         if self.gameOver:
@@ -68,8 +67,11 @@ class Plane:
             b.update(enemies)
 
         for e in enemies:
-            if distance(self, e) < (self.size / 2 + e.size / 2):
+            xDistance = abs(self.x - e.x)
+            yDistance = abs(self.y - e.y)
+            if (xDistance + yDistance) < self.size:
                 self.takeDamage()
+
     
     def draw(self, screen):
         if not self.gameOver:
